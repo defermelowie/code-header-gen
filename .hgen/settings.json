@@ -1,0 +1,10 @@
+{
+    "date-format": "d %B %Y",
+    "keywords": {
+        "project-name": "Test project",
+        "project-description": "A project to test hgen",
+        "organisation": "UHasselt/KULeuven - FIIW",
+        "author": "Lowie Deferme"
+    },
+    "shebang-by-default": false
+}
