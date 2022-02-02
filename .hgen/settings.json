@@ -3,8 +3,9 @@
     "keywords": {
         "project-name": "Test project",
         "project-description": "A project to test hgen",
-        "organisation": "UHasselt/KULeuven - FIIW",
-        "author": "Lowie Deferme"
+        "organization": "UHasselt/KULeuven - FIIW",
+        "author": "Lowie Deferme",
+        "id": "7788478879887878"
     },
     "shebang-by-default": false
 }

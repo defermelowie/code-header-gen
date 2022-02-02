@@ -19,8 +19,7 @@ fn main() {
         "{}{}",
         &cli_arguments.filename, &lang_config.file_extension[&cli_arguments.filetype]
     );
-
-    // TODO: get self defined template keywords
+    let gen_config = config::load_general_config();
 
     /**********************************************************
      *                     Render header                      *
@@ -31,18 +30,20 @@ fn main() {
         .register_template_file("header", template_path)
         .unwrap();
 
-    let mut vars: HashMap<&str, &str> = HashMap::new();
+    let mut vars: HashMap<&String, &String> = HashMap::new();
+    //Predefined keywords
+    let date_key = String::from("date");
+    let lc_key = String::from("lc");
+    let fn_key = String::from("fn");
+    let lang_key = String::from("lang");
     // Predefined values
-    vars.insert("lc", &lang_config.line_comment);
-    let date = Utc::now().format("%d %B %Y").to_string(); // TODO: get format from config
-    vars.insert("date", &date);
-    vars.insert("fn", &filename);
-    vars.insert("lang", &cli_arguments.language);
+    let date = Utc::now().format(&gen_config.date_format).to_string();
+    vars.insert(&date_key, &date);
+    vars.insert(&lc_key, &lang_config.line_comment);
+    vars.insert(&fn_key, &filename);
+    vars.insert(&lang_key, &cli_arguments.language);
     // Configured values
-    vars.insert("project-name", "Test project"); // TODO: get keywords from config
-    vars.insert("project-description", "A project to test sgen");
-    vars.insert("organization", "UHasselt/KULeuven - FIIW");
-    vars.insert("author", "Lowie Deferme");
+    vars.extend(&gen_config.keywords);
 
     let header = handlebars.render("header", &vars).unwrap();
 
@@ -180,5 +181,31 @@ mod config {
             .join("templates")
             .join("master.hbs");
         return path;
+    }
+
+    #[derive(Deserialize, Debug)]
+    pub struct GenConfig {
+        pub keywords: HashMap<String, String>,
+        #[serde(rename = "date-format")]
+        pub date_format: String,
+        #[serde(rename = "shebang-by-default")]
+        pub shebang_by_default: bool,
+    }
+
+    pub fn load_general_config() -> GenConfig {
+        let mut path = env::current_dir()
+            .unwrap()
+            .join(".hgen")
+            .join("settings.json");
+        if !path.exists() {
+            path = std::path::Path::new(&env::var("XDG_CONFIG_HOME").unwrap())
+                .join("hgen")
+                .join("settings.json");
+        }
+        let file = File::open(path).unwrap();
+        let reader = BufReader::new(file);
+        let general_config: GenConfig = serde_json::from_reader(reader).unwrap();
+
+        return general_config;
     }
 }
