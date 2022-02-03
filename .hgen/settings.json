@@ -1,5 +1,5 @@
 {
-    "date-format": "d %B %Y",
+    "date-format": "%d %B %Y",
     "keywords": {
         "project-name": "Test project",
         "project-description": "A project to test hgen",
