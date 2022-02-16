@@ -2,11 +2,13 @@
 
 > A Generator for header comments at the beginning of a source code file
 
+###### (A simple project to try rust a bit)
+
 ## Configuration
 
 ### Global
 
-Global configuration should be in `XDG_CONFIG_HOME/.hgen`:
+Global configuration should be in `XDG_CONFIG_HOME/hgen`:
 
 ```
 XDG_CONFIG_HOME/hgen
@@ -31,7 +33,7 @@ Date format should be written according to https://docs.rs/chrono/0.4.19/chrono/
 
 #### [`master.hbs`](./.hgen/templates/master.hbs)
 
-##### Predefined template keywords
+### Predefined template keywords
 
 | Keyword    | Description   |
 |:----------:|:--------------|
@@ -42,4 +44,18 @@ Date format should be written according to https://docs.rs/chrono/0.4.19/chrono/
 
 ## Usage
 
-TODO
+```
+USAGE:
+    hgen [OPTIONS] <FILENAME> <LANGUAGE>
+
+ARGS:
+    <FILENAME>    Name of file to generate
+    <LANGUAGE>    Language of file
+
+OPTIONS:
+    -h, --help               Print help information
+    -p, --path <PATH>        Path to create file [current dir if omitted]
+    -s, --shebang            Set shebang if defined
+    -t, --type <FILETYPE>    Type: source, header, ... [default: source]
+    -V, --version            Print version information
+```
