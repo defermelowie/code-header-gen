@@ -24,6 +24,8 @@ fn main() {
     /**********************************************************
      *                     Render header                      *
      **********************************************************/
+
+    // Render header with handlebars
     let mut handlebars = Handlebars::new();
     handlebars.set_strict_mode(true);
     handlebars
@@ -45,9 +47,27 @@ fn main() {
     // Configured values
     vars.extend(&gen_config.keywords);
 
-    let header = handlebars.render("header", &vars).unwrap();
+    let mut header = handlebars.render("header", &vars).unwrap();
 
     // TODO: Write shebang if requested
+    if cli_arguments.shebang {
+        header = format!(
+            "{}\n\n{}",
+            lang_config.shebang.expect(&format!(
+                "No shebang defined for {}",
+                cli_arguments.language
+            )),
+            header
+        );
+    } else if gen_config.shebang_by_default {
+        match lang_config.shebang {
+            Some(s) => header = format!("{}\n\n{}", s, header),
+            None => println!(
+                "[WARN] shebang-by-default is enabled but no shebang was defined for {}",
+                lang_config.language
+            ),
+        };
+    }
 
     /**********************************************************
      *                Write header to new file                *
@@ -57,7 +77,7 @@ fn main() {
         None => Path::new(&filename).to_path_buf(),
     };
     println!(
-        "Create {:#?} with header:\n-----------------------------\n\n{}",
+        "[INFO] Create {:#?} with header:\n-----------------------------\n\n{}",
         file_path, header
     );
     fs::write(file_path, header).expect("Unable to write file");
@@ -75,7 +95,7 @@ mod cli {
         /// Language of file
         pub language: String,
 
-        /// Set shebang if defined [NOT IMPLEMENTED]
+        /// Set shebang if defined
         #[clap(short, long)]
         pub shebang: bool,
 
