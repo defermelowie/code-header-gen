@@ -1,4 +1,4 @@
-# Code-header-gen
+# hgen
 
 > A Generator for header comments at the beginning of a source code file
 
